@@ -1,89 +1,114 @@
-﻿    using Microsoft.AspNetCore.Mvc;
-    using BarcelonaAPIREST.Dal;
-    using BarcelonaAPIREST.Domain;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
+﻿using BarcelonaAPIREST.Domain;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace BarcelonaAPIREST.Controllers
+{
+    public class JugadorController : Controller
     {
+        private readonly HttpClient _httpClient;
 
-        [ApiController]
-        [Route("api")]
-        public class JugadorController : ControllerBase 
+        public JugadorController(IHttpClientFactory httpClientFactory)
         {
-            private readonly SglDbContext dbContext;
-            public JugadorController(SglDbContext dbContext)
+            _httpClient = httpClientFactory.CreateClient("ApiClient");
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var response = await _httpClient.GetAsync("api/jugadores");
+
+            if (response.IsSuccessStatusCode)
             {
-                this.dbContext = dbContext;
+                var content = await response.Content.ReadAsStringAsync();
+                var jugadores = JsonSerializer.Deserialize<List<Jugador>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                // Pasa la lista a la vista
+                return View(jugadores);
             }
 
-            [HttpGet("jugadores")] // Devuelve todos los jugadores que esten el la DB
-            public async Task<IActionResult> GetAllJugadores()
+            // Si la llamada falla, devuelve una vista de error
+            return View("Error");
+        }
+
+        public IActionResult Crear()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Crear(Jugador jugador)
+        {
+            if (ModelState.IsValid)
             {
-                var alljugadores = await dbContext
-                                            .Jugadors
-                                            .ToListAsync();
-                return Ok(alljugadores);
-            }
-
-            [HttpGet("Jugadores/{id}")]  // Uso de ActionResult, CRUDO, Lo que hace es mostrar que es lo que 
-                                         // trearia al realizar la consulta y de donde...
-            public async Task<ActionResult<IEnumerable<Jugador>>> GetJugadorPorId(int id)
-            {
-                var IdJugador = await dbContext.Jugadors.Where(b => b.Id == id).ToListAsync();
-                return IdJugador.Any() ? Ok(IdJugador) : NotFound(id);
-            }
-
-
-            // Metodo Post
-
-            // Añadir Jugadores a la DB
-
-            [HttpPost("AgregarJugadores")]
-
-            public async Task<IActionResult> CreateJugador(Jugador jugador)
-            {
-                var newJugador = new Domain.Jugador()
+                var response = await _httpClient.PostAsJsonAsync("api/AgregarJugadores", jugador);
+                if (response.IsSuccessStatusCode)
                 {
-                    Name = jugador.Name,
-                    Posicion = jugador.Posicion
-                };
-                dbContext.Jugadors.Add(newJugador);
-                var resultado = await dbContext.SaveChangesAsync();
-                return resultado == 1 ? Ok(newJugador.Id) : BadRequest();
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Error al crear el jugador.");
+                }
             }
+            return View(jugador);
+        }
 
-            // Funcion de UPDATE es decir el PUT
-
-            [HttpPut("ActualizarJugadores/{id}")]
-
-            public async Task<IActionResult> UpdateJugador(int id, Jugador jugador)
+        public async Task<IActionResult> Editar(int id)
+        {
+            var response = await _httpClient.GetAsync($"api/Jugadores/{id}");
+            if (response.IsSuccessStatusCode)
             {
-                var actjugador = dbContext.Jugadors.First(b => b.Id == id);
-                actjugador.Name = jugador.Name;
-                actjugador.Posicion = jugador.Posicion;
-                var result = await dbContext.SaveChangesAsync();
-                return result == 1 ? Ok() : BadRequest();
+                var content = await response.Content.ReadAsStringAsync();
+                var jugador = JsonSerializer.Deserialize<Jugador>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return View(jugador);
             }
+            return NotFound();
+        }
 
-            // Funcion de DELETE, Eliminar Jugadores de la DB
-            [HttpDelete("EliminarJugadores/{id}")]
-            public async Task<IActionResult> DeleteJugador(int id)
+        [HttpPost]
+
+        public async Task<IActionResult> Editar(int id, Jugador jugador)
+        {
+            if (ModelState.IsValid)
             {
-                var jugador = await dbContext.Jugadors.FindAsync(id);
-                if (jugador == null)
-                    return NotFound();
-
-                dbContext.Jugadors.Remove(jugador);
-                var result = await dbContext.SaveChangesAsync();
-
-                return result == 1 ? Ok() : BadRequest();
+                var response = await _httpClient.PutAsJsonAsync($"api/ActualizarJugadores/{id}", jugador);
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Error al actualizar el jugador.");
+                }
             }
+            return View(jugador);
+        }
 
+        public async Task<IActionResult> Eliminar(int id)
+        {
+            var response = await _httpClient.GetAsync($"api/Jugadores/{id}");
 
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var jugador = JsonSerializer.Deserialize<Jugador>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return View(jugador);
+            }
+            return NotFound();
+        }
 
+        [HttpPost, ActionName("Eliminar")]
 
-
+        public async Task<IActionResult> ConfirmarEliminar(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"api/EliminarJugadores/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            return BadRequest("Error al eliminar el jugador.");
 
         }
+    }
 }

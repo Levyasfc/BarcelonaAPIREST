@@ -18,11 +18,11 @@ namespace BarcelonaAPIREST.Controllers
     [Route("api")]
 
 
-    public class EquipoController : ControllerBase
+    public class EquipoApiController : ControllerBase
     {
         private readonly SglDbContext dbContext;
 
-        public EquipoController(SglDbContext dbContext)
+        public EquipoApiController(SglDbContext dbContext)
         {
             this.dbContext = dbContext;
 

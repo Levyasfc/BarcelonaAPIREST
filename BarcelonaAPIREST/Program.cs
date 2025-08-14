@@ -2,7 +2,7 @@ using BarcelonaAPIREST.Dal;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// MVC + API
+// Aquí mantienes solo los servicios necesarios para MVC y la API
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -23,17 +23,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
 
-app.MapControllers();
-
+// Solo el enrutamiento para MVC.
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Principal}/{action=Index}/{id?}");
+    pattern: "{controller=PaginaPrincipal}/{action=Index}/{id?}");
 
 // Crear DB si no existe
 using (var scope = app.Services.CreateScope())
