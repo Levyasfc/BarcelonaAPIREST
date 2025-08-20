@@ -18,8 +18,8 @@ namespace BarcelonaAPIREST.Controllers
             }
 
             [HttpGet("jugadores")] // Devuelve todos los jugadores que esten el la DB
-        public async Task<ActionResult<IEnumerable<JugadorDTO>>> GetAllJugadores()
-        {
+            public async Task<ActionResult<IEnumerable<JugadorDTO>>> GetAllJugadores()
+            {
             // 1. Obtiene los datos del jugador E incluyendo su equipo
             var alljugadores = await dbContext
                                         .Jugadors
@@ -38,22 +38,42 @@ namespace BarcelonaAPIREST.Controllers
 
             // 3. Devuelve el DTO, que el serializador puede manejar sin problemas
             return Ok(jugadoresDto);
-        }
-
-        [HttpGet("Jugadores/{id}")]  // Uso de ActionResult, CRUDO, Lo que hace es mostrar que es lo que 
-                                         // trearia al realizar la consulta y de donde...
-            public async Task<ActionResult<IEnumerable<Jugador>>> GetJugadorPorId(int id)
-            {
-                var IdJugador = await dbContext.Jugadors.Where(b => b.Id == id).ToListAsync();
-                return IdJugador.Any() ? Ok(IdJugador) : NotFound(id);
             }
 
 
-            // Metodo Post
+        // Obtener jugadores por el ID
 
-            // Añadir Jugadores a la DB
+        [HttpGet("Jugadores/{id}")]
+        public async Task<ActionResult<JugadorDTO>> GetJugadorPorId(int id)
+        {
+            var jugador = await dbContext.Jugadors
+                                         .Include(j => j.Equipo)
+                                         .FirstOrDefaultAsync(j => j.Id == id);
 
-            [HttpPost("AgregarJugadores")]
+            if (jugador == null)
+            {
+                return NotFound();
+            }
+
+            // Mapear la entidad a un DTO
+            var jugadorDto = new JugadorDTO
+            {
+                Id = jugador.Id,
+                Name = jugador.Name,
+                Posicion = jugador.Posicion,
+                NombreEquipo = jugador.Equipo?.Name,
+                Foto = jugador.Foto
+            };
+
+            return Ok(jugadorDto);
+        }
+
+
+        // Metodo Post
+
+        // Añadir Jugadores a la DB
+
+        [HttpPost("AgregarJugadores")]
 
             public async Task<IActionResult> CreateJugador(Jugador jugador)
             {
@@ -95,6 +115,8 @@ namespace BarcelonaAPIREST.Controllers
 
                 return result == 1 ? Ok() : BadRequest();
             }
+
+            
 
 
 
