@@ -1,7 +1,9 @@
 using BarcelonaAPIREST.Dal;
 using BarcelonaAPIREST.Domain;
+using BarcelonaAPIREST.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace BarcelonaAPIREST.Controllers
 {
@@ -21,10 +23,12 @@ namespace BarcelonaAPIREST.Controllers
     public class EquipoApiController : ControllerBase
     {
         private readonly SglDbContext dbContext;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public EquipoApiController(SglDbContext dbContext)
+        public EquipoApiController(SglDbContext dbContext, IWebHostEnvironment hostEnvironment)
         {
             this.dbContext = dbContext;
+            _hostEnvironment = hostEnvironment;
 
         }
 
@@ -37,8 +41,17 @@ namespace BarcelonaAPIREST.Controllers
             var allequipos = await dbContext
                                     .Equipos
                                     .ToListAsync();
-            return Ok(allequipos);
-        }
+            
+            var equiposDto = allequipos.Select(e => new EquipoDTO() 
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Escudo = e.Escudo 
+            }).ToList();
+
+            return Ok(equiposDto); 
+
+        }   
 
         [HttpGet("equipos/{id}")] // Busca Equipos por ID
 
@@ -80,6 +93,11 @@ namespace BarcelonaAPIREST.Controllers
             var result = await dbContext.SaveChangesAsync();
             return result == 1 ? Ok() : BadRequest();
         }
+
+
+
+        // Endpoint para subir escudos
+    
 
 
     }

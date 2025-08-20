@@ -1,7 +1,7 @@
 ﻿    using Microsoft.AspNetCore.Mvc;
     using BarcelonaAPIREST.Dal;
     using BarcelonaAPIREST.Domain;
-    using Microsoft.AspNetCore.Mvc;
+    using BarcelonaAPIREST.DTOs;
     using Microsoft.EntityFrameworkCore;
 
 namespace BarcelonaAPIREST.Controllers
@@ -18,15 +18,29 @@ namespace BarcelonaAPIREST.Controllers
             }
 
             [HttpGet("jugadores")] // Devuelve todos los jugadores que esten el la DB
-            public async Task<IActionResult> GetAllJugadores()
-            {
-                var alljugadores = await dbContext
-                                            .Jugadors
-                                            .ToListAsync();
-                return Ok(alljugadores);
-            }
+        public async Task<ActionResult<IEnumerable<JugadorDTO>>> GetAllJugadores()
+        {
+            // 1. Obtiene los datos del jugador E incluyendo su equipo
+            var alljugadores = await dbContext
+                                        .Jugadors
+                                        .Include(j => j.Equipo)
+                                        .ToListAsync();
 
-            [HttpGet("Jugadores/{id}")]  // Uso de ActionResult, CRUDO, Lo que hace es mostrar que es lo que 
+            // 2. Mapea la entidad (con el ciclo) a un DTO (sin el ciclo)
+            var jugadoresDto = alljugadores.Select(j => new JugadorDTO
+            {
+                Id = j.Id,
+                Name = j.Name,
+                Posicion = j.Posicion,
+                NombreEquipo = j.Equipo?.Name, // Aquí se accede al nombre del equipo
+                Foto = j.Foto
+            }).ToList();
+
+            // 3. Devuelve el DTO, que el serializador puede manejar sin problemas
+            return Ok(jugadoresDto);
+        }
+
+        [HttpGet("Jugadores/{id}")]  // Uso de ActionResult, CRUDO, Lo que hace es mostrar que es lo que 
                                          // trearia al realizar la consulta y de donde...
             public async Task<ActionResult<IEnumerable<Jugador>>> GetJugadorPorId(int id)
             {
@@ -46,7 +60,8 @@ namespace BarcelonaAPIREST.Controllers
                 var newJugador = new Domain.Jugador()
                 {
                     Name = jugador.Name,
-                    Posicion = jugador.Posicion
+                    Posicion = jugador.Posicion, 
+                    EquipoId = jugador.EquipoId 
                 };
                 dbContext.Jugadors.Add(newJugador);
                 var resultado = await dbContext.SaveChangesAsync();
@@ -62,7 +77,8 @@ namespace BarcelonaAPIREST.Controllers
                 var actjugador = dbContext.Jugadors.First(b => b.Id == id);
                 actjugador.Name = jugador.Name;
                 actjugador.Posicion = jugador.Posicion;
-                var result = await dbContext.SaveChangesAsync();
+                actjugador.EquipoId = jugador.EquipoId; // Asegurarse de que el EquipoId se actualice correctamente
+            var result = await dbContext.SaveChangesAsync();
                 return result == 1 ? Ok() : BadRequest();
             }
 

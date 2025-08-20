@@ -29,6 +29,9 @@ namespace BarcelonaAPIREST.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Escudo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -65,6 +68,9 @@ namespace BarcelonaAPIREST.Migrations
 
                     b.Property<int>("EquipoId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Foto")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()

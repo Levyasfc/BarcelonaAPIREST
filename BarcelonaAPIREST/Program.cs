@@ -1,24 +1,27 @@
 using BarcelonaAPIREST.Dal;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Aquí mantienes solo los servicios necesarios para MVC y la API
-builder.Services.AddControllersWithViews();
+// Configura los servicios para una API pura.
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
+
+// Configura Swagger para la documentación de la API.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<SglDbContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexionJugadoresDB")));
 
-// Registrar HttpClient para consumir la API interna
-builder.Services.AddHttpClient("ApiClient", client =>
-{
-    client.BaseAddress = new Uri("https://localhost:7176/"); // Cambia al puerto HTTPS que uses
-});
+// Configura la base de datos.
+builder.Services.AddDbContext<SglDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexionJugadoresDB")));
 
 var app = builder.Build();
 
-// Swagger en desarrollo
+// Configura el pipeline para la API.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -26,16 +29,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
 
-// Solo el enrutamiento para MVC.
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=PaginaPrincipal}/{action=Index}/{id?}");
+app.MapControllers(); // Esto mapea tus controladores de API.
 
-// Crear DB si no existe
+// Crea la base de datos si no existe.
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<SglDbContext>();

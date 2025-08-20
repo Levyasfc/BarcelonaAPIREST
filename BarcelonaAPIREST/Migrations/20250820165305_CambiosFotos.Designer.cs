@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BarcelonaAPIREST.Migrations
 {
     [DbContext(typeof(SglDbContext))]
-    [Migration("20250820143916_AddRelationships")]
-    partial class AddRelationships
+    [Migration("20250820165305_CambiosFotos")]
+    partial class CambiosFotos
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,6 +31,9 @@ namespace BarcelonaAPIREST.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Escudo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -68,6 +71,9 @@ namespace BarcelonaAPIREST.Migrations
 
                     b.Property<int>("EquipoId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Foto")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
