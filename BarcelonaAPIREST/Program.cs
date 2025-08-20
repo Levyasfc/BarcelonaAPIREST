@@ -1,4 +1,5 @@
 using BarcelonaAPIREST.Dal;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,7 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<SglDbContext>();
+builder.Services.AddDbContext<SglDbContext>(options => 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexionJugadoresDB")));
 
 // Registrar HttpClient para consumir la API interna
 builder.Services.AddHttpClient("ApiClient", client =>
