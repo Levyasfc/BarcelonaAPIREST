@@ -42,5 +42,32 @@ public class AplicacionController : Controller
         return View(jugador);
     }
 
+    public IActionResult Historia()
+    {
+        return View();
+    }
+
+    public async Task<IActionResult> Jugadores()
+    {
+
+        var jugadores = new List<JugadorDTO>();
+
+
+        var response = await _httpClient.GetAsync("api/jugadores");
+
+        if (response.IsSuccessStatusCode)
+        {
+            jugadores = await response.Content.ReadFromJsonAsync<List<JugadorDTO>>();
+        }
+        else
+        {
+            
+            return View("Error");
+        }
+
+        
+        return View(jugadores);
+    }
+
 
 }

@@ -40,8 +40,32 @@ namespace BarcelonaAPIREST.Controllers
             return Ok(jugadoresDto);
             }
 
+        // Obtener jugador por ID
 
-        // Obtener jugadores por el ID
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetJugadorById(int id)
+        {
+            var jugador = await dbContext.Jugadors.FindAsync(id);
+
+            if (jugador == null)
+                return NotFound();
+
+            var jugadorDto = new JugadorDTO
+            {
+                Id = jugador.Id,
+                Name = jugador.Name,
+                Posicion = jugador.Posicion,
+                Dorsal = jugador.Dorsal,
+                Foto = jugador.Foto,
+                NombreEquipo = jugador.Equipo?.Name
+            };
+
+            return Ok(jugadorDto);
+        }
+
+
+
+        // Obtener jugadores por el dorsal
 
         [HttpGet("Jugadores/{dorsal}")]
         public async Task<ActionResult<JugadorDTO>> GetJugadorPorId(int dorsal)
@@ -74,36 +98,57 @@ namespace BarcelonaAPIREST.Controllers
         // Añadir Jugadores a la DB
 
         [HttpPost("AgregarJugadores")]
+        public async Task<IActionResult> CreateJugador([FromBody] JugadorCreateDto jugadorDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            public async Task<IActionResult> CreateJugador(Jugador jugador)
+            var newJugador = new Domain.Jugador()
             {
-                var newJugador = new Domain.Jugador()
-                {
-                    Name = jugador.Name,
-                    Posicion = jugador.Posicion, 
-                    EquipoId = jugador.EquipoId 
-                };
-                dbContext.Jugadors.Add(newJugador);
-                var resultado = await dbContext.SaveChangesAsync();
-                return resultado == 1 ? Ok(newJugador.Dorsal) : BadRequest();
+                Name = jugadorDto.Name,
+                Posicion = jugadorDto.Posicion,
+                Dorsal = jugadorDto.Dorsal,
+                Foto = jugadorDto.Foto,
+                EquipoId = jugadorDto.EquipoId
+            };
+
+            dbContext.Jugadors.Add(newJugador);
+            await dbContext.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetJugadorById), new { id = newJugador.Id }, newJugador);
+        }
+
+        // Funcion de UPDATE es decir el PUT
+
+        [HttpPut("ActualizarJugadores/{dorsal}")]
+        public async Task<IActionResult> UpdateJugador(int dorsal, [FromBody] JugadorUpdateDto jugadorDto)
+        {
+            
+            var actjugador = await dbContext.Jugadors.FirstOrDefaultAsync(b => b.Dorsal == dorsal);
+
+            
+            if (actjugador == null)
+            {
+                return NotFound($"No se encontró al jugador con el dorsal {dorsal}.");
             }
 
-            // Funcion de UPDATE es decir el PUT
+            // 3. Mapea los datos del DTO a la entidad
+            actjugador.Name = jugadorDto.Name;
+            actjugador.Posicion = jugadorDto.Posicion;
+            actjugador.Dorsal = jugadorDto.Dorsal;
 
-            [HttpPut("ActualizarJugadores/{id}")]
+           
+            await dbContext.SaveChangesAsync();
 
-            public async Task<IActionResult> UpdateJugador(int id, Jugador jugador)
-            {
-                var actjugador = dbContext.Jugadors.First(b => b.Dorsal == id);
-                actjugador.Name = jugador.Name;
-                actjugador.Posicion = jugador.Posicion;
-                actjugador.EquipoId = jugador.EquipoId; // Asegurarse de que el EquipoId se actualice correctamente
-            var result = await dbContext.SaveChangesAsync();
-                return result == 1 ? Ok() : BadRequest();
-            }
+            
+            return NoContent();
+        }
 
-            // Funcion de DELETE, Eliminar Jugadores de la DB
-            [HttpDelete("EliminarJugadores/{id}")]
+
+
+
+        // Funcion de DELETE, Eliminar Jugadores de la DB
+        [HttpDelete("EliminarJugadores/{id}")]
             public async Task<IActionResult> DeleteJugador(int id)
             {
                 var jugador = await dbContext.Jugadors.FindAsync(id);

@@ -1,0 +1,309 @@
+﻿@model IEnumerable<BarcelonaAPIREST.DTOs.JugadorDTO>
+
+@{
+    ViewData["Title"] = "Alineación";
+    Layout = "_Layout";
+}
+
+
+<div class="container-fluid text-center bg-success bg-opacity-100 py-4" style="min-height:70vh;">
+    <h2 class="text-center mb-4" style="color:white;">Alineación del Equipo</h2>
+
+    @*
+        Delanteros
+    *@
+
+    <div class="row justify-content-center">
+        <div class="col-4">
+            <div id="carrusel-dc" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @{
+                        var jugadoresDC = Model.Where(j => j.Posicion == "DC").ToList();
+                        int a = 0;
+                    }
+                    @foreach (var jugador in jugadoresDC)
+                    {
+                        <div class="carousel-item @(a == 0 ? "active" : "")">
+                            <div class="card text-dark p-2 text-center player-card">
+                                <div class="card-body p-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <div class="position-box">
+                                            <span>@jugador.Posicion</span>
+                                        </div>
+                                        <img src="@jugador.Foto" class="player-photo" alt="Foto de @jugador.Name" />
+                                    </div>
+                                    <p class="card-text text-center mb-0">@jugador.Name</p>
+                                </div>
+                            </div>
+                        </div>
+                        a++;
+                    }
+                </div>
+                @if (jugadoresDC.Count > 1)
+                {
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carrusel-dc" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carrusel-dc" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    @*
+        Extremos
+    *@
+
+    <div class="row justify-content-between mt-3">
+
+
+        @* EXTREMOS IZQUIERDOS *@
+
+        <div class="col-4">
+            <div id="carrusel-ei" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @{
+                        var jugadoreEI = Model.Where(j => j.Posicion == "EI").ToList();
+                        int b = 0;
+                    }
+                    @foreach (var jugador in jugadoreEI)
+                    {
+                        <div class="carousel-item @(b == 0 ? "active" : "")">
+                            <div class="card text-dark p-2 text-center player-card">
+                                <div class="card-body p-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <div class="position-box">
+                                            <span>@jugador.Posicion</span>
+                                        </div>
+                                        <img src="@jugador.Foto" class="player-photo" alt="Foto de @jugador.Name" />
+                                    </div>
+                                    <p class="card-text text-center mb-0">@jugador.Name</p>
+                                </div>
+                            </div>
+                        </div>
+                        b++;
+                    }
+                </div>
+                @if (jugadoreEI.Count > 1)
+                {
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carrusel-ei" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carrusel-ei" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                }
+            </div>
+        </div>
+
+
+        @* EXTREMOS DERECHOS *@
+
+        <div class="col-4">
+            <div id="carrusel-ed" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @{
+                        var jugadoresED = Model.Where(j => j.Posicion == "ED").ToList();
+                        int c = 0;
+                    }
+                    @foreach (var jugador in jugadoresED)
+                    {
+                        <div class="carousel-item @(c == 0 ? "active" : "")">
+                            <div class="card text-dark p-2 text-center player-card">
+                                <div class="card-body p-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <div class="position-box">
+                                            <span>@jugador.Posicion</span>
+                                        </div>
+                                        <img src="@jugador.Foto" class="player-photo" alt="Foto de @jugador.Name" />
+                                    </div>
+                                    <p class="card-text text-center mb-0">@jugador.Name</p>
+                                </div>
+                            </div>
+                        </div>
+                        c++;
+                    }
+                </div>
+                @if (jugadoresED.Count > 1)
+                {
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carrusel-ed" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carrusel-ed" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                }
+            </div>
+        </div>
+
+         
+    </div>
+
+    @*
+        Mediocampistas Ofensivos
+    *@
+
+    <div class="row justify-content-center mt-3">
+        <div class="col-4">
+            <div id="carrusel-mco" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @{
+                        var jugadoresMCO = Model.Where(j => j.Posicion == "MCO").ToList();
+                        int d = 0;
+                    }
+                    @foreach (var jugador in jugadoresMCO)
+                    {
+                        <div class="carousel-item @(d == 0 ? "active" : "")">
+                            <div class="card text-dark p-2 text-center player-card">
+                                <div class="card-body p-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <div class="position-box">
+                                            <span>@jugador.Posicion</span>
+                                        </div>
+                                        <img src="@jugador.Foto" class="player-photo" alt="Foto de @jugador.Name" />
+                                    </div>
+                                    <p class="card-text text-center mb-0">@jugador.Name</p>
+                                </div>
+                            </div>
+                        </div>
+                        d++;
+                    }
+                </div>
+                @if (jugadoresMCO.Count > 1)
+                {
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carrusel-mco" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carrusel-mco" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    @*
+        Mediocampistas
+    *@
+
+    <div class="row justify-content-evenly mt-3">
+        @foreach (var jugador in Model.Where(j => j.Posicion == "MC"))
+        {
+            <div class="col-4">
+                <div class="card text-dark p-2 text-center player-card">
+                    <div class="card-body p-1">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div class="position-box">
+                                <span>@jugador.Posicion</span>
+                            </div>
+                            <img src="@jugador.Foto" class="player-photo" />
+
+                        </div>
+                        <p class="card-text text-center mb-0">@jugador.Name</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @*
+        Laterales
+    *@
+
+    <div class="row justify-content-between mt-3">
+        @foreach (var jugador in Model.Where(j => j.Posicion == "LI"))
+        {
+            <div class="col-4">
+                <div class="card text-dark p-2 text-center player-card">
+                    <div class="card-body p-1">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div class="position-box">
+                                <span>@jugador.Posicion</span>
+                            </div>
+                            <img src="@jugador.Foto" class="player-photo" />
+
+                        </div>
+                        <p class="card-text text-center mb-0">@jugador.Name</p>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @foreach (var jugador in Model.Where(j => j.Posicion == "LD"))
+        {
+            <div class="col-4">
+                <div class="card text-dark p-2 text-center player-card">
+                    <div class="card-body p-1">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div class="position-box">
+                                <span>@jugador.Posicion</span>
+                            </div>
+                            <img src="@jugador.Foto" class="player-photo" />
+
+                        </div>
+                        <p class="card-text text-center mb-0">@jugador.Name</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @*
+        Defensas
+    *@
+
+    <div class="row justify-content-center mt-3">
+        @foreach (var jugador in Model.Where(j => j.Posicion == "DFC"))
+        {
+            <div class="col-4">
+                <div class="card text-dark p-2 text-center player-card">
+                    <div class="card-body p-1">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div class="position-box">
+                                <span>@jugador.Posicion</span>
+                            </div>
+                            <img src="@jugador.Foto" class="player-photo" />
+
+                        </div>
+                        <p class="card-text text-center mb-0">@jugador.Name</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @*
+        Porteros
+    *@
+
+    <div class="row justify-content-center mt-3">
+        @foreach (var jugador in Model.Where(j => j.Posicion == "POR"))
+        {
+            <div class="col-4">
+                <div class="card text-dark p-2 text-center player-card">
+                    <div class="card-body p-1">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div class="position-box">
+                                <span>@jugador.Posicion</span>
+                            </div>
+                            <img src="@jugador.Foto" class="player-photo" />
+
+                        </div>
+                        <p class="card-text text-center mb-0">@jugador.Name</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>

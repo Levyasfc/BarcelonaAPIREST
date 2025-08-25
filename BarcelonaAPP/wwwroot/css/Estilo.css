@@ -1,19 +1,27 @@
-﻿.FondoBarcelona {
-    background: linear-gradient(90deg,rgba(120, 0, 26, 1) 0%, rgba(6, 0, 128, 1) 87%);
+﻿.FondoApp {
+    background: #002554
 }
 
 .FondoHeader {
-    background: #3A86FF;
+    background: linear-gradient(90deg, #8A1538, #004D98); 
 }
 
 
-.header {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 10px;
-    border: 2px solid black;
-    background-color: #f8f9fa;
+.FondoHeader .nav-link {
+    font-size: 1.1rem;
+    color: #fff !important;
+    text-transform: uppercase;
+    transition: color 0.3s ease-in-out;
+}
+
+.FondoHeader .nav-link:hover {
+    color: #FDB927 !important; 
+}
+
+ 
+.FondoHeader img {
+    display: block;
+    margin: 0 40px;
 }
 
 .header a {
@@ -34,4 +42,68 @@
 .logo_Header {
     height: 80px;
     width: auto;
+}
+
+/* Estilos para Historia */
+
+.timeline-point {
+    width: 12px;
+    height: 12px;
+    background-color: #f39c12;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.timeline-year {
+    font-size: 1.1rem;
+    color: #2c3e50;
+}
+
+/*Estilos para jugadores*/
+
+.player-card {
+    width: 120px;
+    background: #ebd534;
+    height: 100px;
+    margin: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.position-box {
+    background-color: #343a40; 
+    color: white;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.8em;
+}
+
+.player-photo {
+    width: 50px;
+    height: auto;
+    
+}
+
+.rating-box {
+    background-color: #007bff; 
+    color: white;
+    width: 45px;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.card-text {
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 5px;
 }
