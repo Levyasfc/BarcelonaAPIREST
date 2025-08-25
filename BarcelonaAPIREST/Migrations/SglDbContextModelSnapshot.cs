@@ -66,6 +66,9 @@ namespace BarcelonaAPIREST.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("Dorsal")
+                        .HasColumnType("int");
+
                     b.Property<int>("EquipoId")
                         .HasColumnType("int");
 
@@ -90,23 +93,47 @@ namespace BarcelonaAPIREST.Migrations
                         new
                         {
                             Id = 1,
+                            Dorsal = 10,
                             EquipoId = 1,
+                            Foto = "https://www.fcbarcelona.com/photo-resources/2025/07/09/47ddeac8-9a36-4618-af27-5b1310184370/19-Lamine.jpg?width=1200&height=750",
                             Name = "LamineYamal",
                             Posicion = "ED"
                         },
                         new
                         {
                             Id = 2,
-                            EquipoId = 2,
-                            Name = "GonzaloGarcia",
-                            Posicion = "DC"
+                            Dorsal = 14,
+                            EquipoId = 1,
+                            Foto = "https://www.fcbarcelona.com/photo-resources/2025/07/28/75f02288-6747-4d91-8a1f-fcbd3857fd1a/Fitxa-14-Blau-Rashford.jpg?width=1680&height=1050",
+                            Name = "MarcusRashford",
+                            Posicion = "EI"
                         },
                         new
                         {
                             Id = 3,
-                            EquipoId = 3,
-                            Name = "RafaelLeao",
+                            Dorsal = 9,
+                            EquipoId = 1,
+                            Foto = "https://www.fcbarcelona.com/photo-resources/2025/07/09/e8378527-14fe-4dc7-a0c2-e3cea291a6e2/09-Lewandowski.jpg?width=1680&height=1050",
+                            Name = "RobertLewandoski",
+                            Posicion = "DC"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Dorsal = 11,
+                            EquipoId = 1,
+                            Foto = "https://www.fcbarcelona.com/photo-resources/2025/07/09/87585699-3a8f-41d4-9912-e63f569f6fd6/11-Raphinha.jpg?width=1680&height=1050",
+                            Name = "Raphinha",
                             Posicion = "EI"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Dorsal = 13,
+                            EquipoId = 1,
+                            Foto = "https://www.fcbarcelona.com/photo-resources/2025/07/09/3337817d-b39f-4dfa-924b-89994d15eee1/00-Joan_Garcia.jpg?width=1680&height=1050",
+                            Name = "JoanGarcia",
+                            Posicion = "POR"
                         });
                 });
 

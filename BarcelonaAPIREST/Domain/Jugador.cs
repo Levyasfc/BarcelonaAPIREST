@@ -3,6 +3,7 @@
     public class Jugador
     {
         public int Id { get; set; }
+        public int Dorsal { get; set; }
         public required string Name { get; set; }
 
         public string Posicion {  get; set; }

@@ -29,7 +29,7 @@ namespace BarcelonaAPIREST.Controllers
             // 2. Mapea la entidad (con el ciclo) a un DTO (sin el ciclo)
             var jugadoresDto = alljugadores.Select(j => new JugadorDTO
             {
-                Id = j.Id,
+                Dorsal = j.Dorsal,
                 Name = j.Name,
                 Posicion = j.Posicion,
                 NombreEquipo = j.Equipo?.Name, // Aquí se accede al nombre del equipo
@@ -43,12 +43,12 @@ namespace BarcelonaAPIREST.Controllers
 
         // Obtener jugadores por el ID
 
-        [HttpGet("Jugadores/{id}")]
-        public async Task<ActionResult<JugadorDTO>> GetJugadorPorId(int id)
+        [HttpGet("Jugadores/{dorsal}")]
+        public async Task<ActionResult<JugadorDTO>> GetJugadorPorId(int dorsal)
         {
             var jugador = await dbContext.Jugadors
                                          .Include(j => j.Equipo)
-                                         .FirstOrDefaultAsync(j => j.Id == id);
+                                         .FirstOrDefaultAsync(j => j.Dorsal == dorsal);
 
             if (jugador == null)
             {
@@ -58,7 +58,7 @@ namespace BarcelonaAPIREST.Controllers
             // Mapear la entidad a un DTO
             var jugadorDto = new JugadorDTO
             {
-                Id = jugador.Id,
+                Dorsal = jugador.Dorsal,
                 Name = jugador.Name,
                 Posicion = jugador.Posicion,
                 NombreEquipo = jugador.Equipo?.Name,
@@ -85,7 +85,7 @@ namespace BarcelonaAPIREST.Controllers
                 };
                 dbContext.Jugadors.Add(newJugador);
                 var resultado = await dbContext.SaveChangesAsync();
-                return resultado == 1 ? Ok(newJugador.Id) : BadRequest();
+                return resultado == 1 ? Ok(newJugador.Dorsal) : BadRequest();
             }
 
             // Funcion de UPDATE es decir el PUT
@@ -94,7 +94,7 @@ namespace BarcelonaAPIREST.Controllers
 
             public async Task<IActionResult> UpdateJugador(int id, Jugador jugador)
             {
-                var actjugador = dbContext.Jugadors.First(b => b.Id == id);
+                var actjugador = dbContext.Jugadors.First(b => b.Dorsal == id);
                 actjugador.Name = jugador.Name;
                 actjugador.Posicion = jugador.Posicion;
                 actjugador.EquipoId = jugador.EquipoId; // Asegurarse de que el EquipoId se actualice correctamente

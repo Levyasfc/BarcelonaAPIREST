@@ -25,29 +25,19 @@ public class AplicacionController : Controller
         return View(new List<JugadorDTO>());
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Crear(JugadorDTO jugador, IFormFile FotoFile)
+    public async Task<IActionResult> Crear(JugadorDTO jugador)
     {
-        using (var content = new MultipartFormDataContent())
+        if (ModelState.IsValid)
         {
-            // Agrega los datos del jugador como contenido
-            content.Add(new StringContent(jugador.Name), "Name");
-            content.Add(new StringContent(jugador.Posicion), "Posicion");
-            content.Add(new StringContent(jugador.NombreEquipo), "NombreEquipo");
+            
+            var response = await _httpClient.PostAsJsonAsync("api/AgregarJugadores", jugador);
 
-            // Agrega el archivo de la foto
-            if (FotoFile != null && FotoFile.Length > 0)
-            {
-                var streamContent = new StreamContent(FotoFile.OpenReadStream());
-                content.Add(streamContent, "FotoFile", FotoFile.FileName);
-            }
-
-            var response = await _httpClient.PostAsync("api/JugadorApi/Crear", content); // Ajusta la URL de tu API
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction(nameof(Index));
             }
-            // Manejar errores
+
+            ModelState.AddModelError("", "Error al crear el jugador.");
         }
         return View(jugador);
     }

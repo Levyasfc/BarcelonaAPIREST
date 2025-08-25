@@ -1,8 +1,11 @@
 ﻿@model IEnumerable<BarcelonaAPIREST.DTOs.JugadorDTO>
 
 @{
+	Layout = "_Layout";
     ViewData["Title"] = "Jugadores";
+    ViewData["BodyClass"] = "FondoBarcelona";
 }
+
 
 <h1>Jugadores</h1>
 
@@ -45,18 +48,11 @@
                     <img src="@Url.Content(item.Foto)" alt="Foto del jugador" class="img-fluid" style="max-width: 80px;" />
                 </td>
                 <td>
-                    <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-sm btn-info">Editar</a> |
-                    <a asp-action="Eliminar" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                    
                 </td>
             </tr>
         }
 
-        <form asp-action="Crear" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="FotoFile">Seleccionar foto</label>
-                <input type="file" class="form-control-file" id="FotoFile" name="FotoFile">
-            </div>
-            <button type="submit" class="btn btn-primary">Crear</button>
-        </form>
+       
     </tbody>
 </table>

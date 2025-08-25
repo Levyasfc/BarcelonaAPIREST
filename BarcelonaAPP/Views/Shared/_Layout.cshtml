@@ -4,21 +4,27 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BarcelonaApp.Web</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/Estilo.css" />
 </head>
-<body>
-    <header>
-    </header>
+<body class="FondoBarcelona">
 
-    <div class="container">
+        <header class="FondoHeader">
+            <div class="header d-flex justify-content-evenly align-items-center py-3">
+                <a asp-action="Index" asp-controller="Aplicacion" class="nav-link text-white">INICIO</a>
+                <div class="title text-white fw-bold d-flex align-items-center">
+                    <img src="~/Img/logo.png" style="height: 60px; margin-right: 10px;" />
+                </div>
+                <a asp-action="Partidos" asp-controller="Aplicacion" class="nav-link text-white">PARTIDOS</a>
+            </div>
+        </header>
+
+    <div class="container mt-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-    </footer>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
