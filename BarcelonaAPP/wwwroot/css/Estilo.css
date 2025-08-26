@@ -107,3 +107,9 @@
     font-weight: bold;
     margin-top: 5px;
 }
+
+.colorLETRAS {
+    background: linear-gradient(90deg, #fc0303, #036ffc);
+    -webkit-background-clip: text;
+    color: transparent;
+}

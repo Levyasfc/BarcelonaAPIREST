@@ -20,23 +20,24 @@ namespace BarcelonaAPIREST.Controllers
             [HttpGet("jugadores")] // Devuelve todos los jugadores que esten el la DB
             public async Task<ActionResult<IEnumerable<JugadorDTO>>> GetAllJugadores()
             {
-            // 1. Obtiene los datos del jugador E incluyendo su equipo
+            
             var alljugadores = await dbContext
                                         .Jugadors
                                         .Include(j => j.Equipo)
                                         .ToListAsync();
 
-            // 2. Mapea la entidad (con el ciclo) a un DTO (sin el ciclo)
+            
             var jugadoresDto = alljugadores.Select(j => new JugadorDTO
             {
+                Id = j.Id,
                 Dorsal = j.Dorsal,
                 Name = j.Name,
                 Posicion = j.Posicion,
-                NombreEquipo = j.Equipo?.Name, // Aquí se accede al nombre del equipo
+                NombreEquipo = j.Equipo?.Name, 
                 Foto = j.Foto
             }).ToList();
 
-            // 3. Devuelve el DTO, que el serializador puede manejar sin problemas
+            
             return Ok(jugadoresDto);
             }
 
@@ -120,53 +121,58 @@ namespace BarcelonaAPIREST.Controllers
 
         // Funcion de UPDATE es decir el PUT
 
-        [HttpPut("ActualizarJugadores/{dorsal}")]
-        public async Task<IActionResult> UpdateJugador(int dorsal, [FromBody] JugadorUpdateDto jugadorDto)
+        [HttpPut("ActualizarJugadores/{id}")]
+        public async Task<IActionResult> UpdateJugador(int id, [FromBody] JugadorUpdateDto jugadorDto)
         {
-            
-            var actjugador = await dbContext.Jugadors.FirstOrDefaultAsync(b => b.Dorsal == dorsal);
+           
+            var actjugador = await dbContext.Jugadors.FirstOrDefaultAsync(b => b.Id == id);
 
-            
             if (actjugador == null)
             {
-                return NotFound($"No se encontró al jugador con el dorsal {dorsal}.");
+                return NotFound($"No se encontró al jugador con el ID {id}.");
             }
 
-            // 3. Mapea los datos del DTO a la entidad
+            
             actjugador.Name = jugadorDto.Name;
             actjugador.Posicion = jugadorDto.Posicion;
             actjugador.Dorsal = jugadorDto.Dorsal;
+            actjugador.Foto = jugadorDto.Foto;
 
-           
             await dbContext.SaveChangesAsync();
 
-            
             return NoContent();
         }
 
 
 
-
         // Funcion de DELETE, Eliminar Jugadores de la DB
-        [HttpDelete("EliminarJugadores/{id}")]
-            public async Task<IActionResult> DeleteJugador(int id)
-            {
-                var jugador = await dbContext.Jugadors.FindAsync(id);
-                if (jugador == null)
-                    return NotFound();
+        [HttpDelete("EliminarJugadores/{dorsal}")] 
+        public async Task<IActionResult> DeleteJugador(int dorsal)
+        {
+            var jugador = await dbContext.Jugadors.FirstOrDefaultAsync(j => j.Dorsal == dorsal);
 
-                dbContext.Jugadors.Remove(jugador);
-                var result = await dbContext.SaveChangesAsync();
+            if (jugador == null)
+                return NotFound();
 
-                return result == 1 ? Ok() : BadRequest();
-            }
+            dbContext.Jugadors.Remove(jugador);
+            await dbContext.SaveChangesAsync();
 
-            
-
-
-
-
-
-
+            return Ok();
         }
+
+        [HttpPost("EliminarJugadores/{dorsal}")] 
+        public async Task<IActionResult> DeleteJugadorConPost(int dorsal)
+        {
+            var jugador = await dbContext.Jugadors.FirstOrDefaultAsync(j => j.Dorsal == dorsal);
+
+            if (jugador == null)
+                return NotFound();
+
+            dbContext.Jugadors.Remove(jugador);
+            await dbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
+    }
 }

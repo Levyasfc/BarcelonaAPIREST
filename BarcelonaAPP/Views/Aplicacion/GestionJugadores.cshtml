@@ -1,0 +1,56 @@
+﻿@model IEnumerable<BarcelonaAPIREST.DTOs.JugadorDTO>
+
+@{
+    ViewData["Title"] = "Administrar Jugadores";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4" style="color:yellow;"> Administrar Jugadores</h2>
+
+    <p>
+        <a asp-controller="Aplicacion" asp-action="Crear" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Crear Nuevo Jugador
+        </a>
+    </p>
+
+    <table class="table table-striped table-bordered">
+        <thead class="bg-primary text-white">
+            <tr>
+                
+                <th>Nombre</th>
+                <th>Posición</th>
+                <th>Dorsal</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var jugador in Model)
+            {
+                <tr>
+                    <td>@jugador.Name</td>
+                    <td>@jugador.Posicion</td>
+                    <td>@jugador.Dorsal</td>
+
+                    <td>
+                        <a class="btn btn-warning" asp-action="EditarJugador" asp-route-id="@jugador.Id">
+                            <i class="fas fa-edit"></i>
+                        </a>
+
+                        <form asp-controller="Aplicacion" asp-action="EliminarJugador" asp-route-dorsal="@jugador.Dorsal" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que quieres eliminar al jugador con dorsal @jugador.Dorsal?');">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="text-center mt-4">
+        <a asp-controller="Aplicacion" asp-action="Jugadores" class="btn btn-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Volver a la Alineación
+        </a>
+    </div>
+</div>
